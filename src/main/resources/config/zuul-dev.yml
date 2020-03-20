@@ -1,0 +1,64 @@
+spring:
+  cloud:
+    config:
+      override-none: true#设置禁止配置中心的配置覆盖客户端配置
+  application:
+    name: zuul
+  redis:
+    host: 192.168.64.129
+    port: 7000
+    timeout: 1000ms
+    database: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1ms
+        max-idle: 8
+        min-idle: 0 
+server:
+  port: 3001
+  
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka1:2001/eureka, http://eureka2:2002/eureka
+
+zuul:
+   routes: 
+      item-service: 
+        path: /**
+        sensitiveHeaders: "*" #涓嶈繃婊や换浣曞ご淇℃伅
+        serviceId: item-service
+   add-proxy-headers: false
+   strip-prefix: true #涓簍rue鐨勬儏鍐典笅锛氬悜鍚庣杞彂涔嬪悗鏄笉浼氭惡甯� '/a' 鐨勩�備负 false 鍒欑浉鍙�
+    #item-service: /item-service/**
+    #user-service: /user-service/**
+    #order-service: /order-service/**
+   retryable: true
+   ratelimit:
+    enabled: true
+    repository: REDIS #浣跨敤redis瀛樺偍锛屼竴瀹氳澶у啓锛�
+    policies:
+      item-service: #閽堝涓婇潰閭ｄ釜鏈嶅姟鐨勯檺娴�
+        limit: 2 #鍛ㄦ湡澶氬皯涓姹�
+        quota: 30#鍛ㄦ湡
+        refreshInterval: 60 #鍒锋柊鏃堕棿绐楀彛鐨勬椂闂达紝榛樿鍊� (绉�)
+        type: ORIGIN #杩欓噷涓�瀹氳澶у啓,绫诲瀷璇存槑锛歎RL閫氳繃璇锋眰璺緞鍖哄垎锛孫RIGIN閫氳繃瀹㈡埛绔疘P鍦板潃鍖哄垎锛孶SER鏄�氳繃鐧诲綍鐢ㄦ埛鍚嶈繘琛屽尯鍒嗭紝涔熷寘鎷尶鍚嶇敤鎴�
+            #serviceId: 鐗瑰畾鏈嶅姟,閽堝鏌愪釜鏈嶅姟鐨刬d绮掑害杩涜闄愭祦
+ribbon: #婧愮爜涓绠梤ibbon瓒呮椂鏃堕棿: ribbonTimeout = (1000 + 2000) * (1 + 1) * (1 + 1) = 12000 getRibbonTimeout
+  ConnectTimeout: 1000
+  ReadTimeout: 2000
+  MaxAutoRetriesNextServer: 1
+  MaxAutoRetries: 1
+hystrix:
+  command: 
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 13000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream

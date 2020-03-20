@@ -1,0 +1,33 @@
+server:
+  port: 8101
+  servlet:
+    context-path: /
+ 
+spring:
+  cloud:
+    config:
+      override-none: true#设置禁止配置中心的配置覆盖客户端配置
+  application:
+    name: item-service
+  rabbitmq:
+    host: 192.168.64.140
+    port: 5672
+    username: admin
+    password: admin
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/jtdb?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true
+    username: root
+    password: root
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka1:2001/eureka, http://eureka2:2002/eureka
+mybatis-plus:  
+  type-aliases-package: cn.tedu.pojo
+  mapper-locations: classpath:/mappers/*.xml
+  configuration:
+    map-underscore-to-camel-case: true #椹煎嘲鍛藉悕
+    # 杩欎釜閰嶇疆浼氬皢鎵ц鐨剆ql鎵撳嵃鍑烘潵锛屽湪寮�鍙戞垨娴嬭瘯鐨勬椂鍊欏彲浠ョ敤
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  
